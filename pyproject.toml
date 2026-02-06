@@ -1,0 +1,12 @@
+[project]
+name = "codebasegps-service"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.128.2",
+    "google-generativeai>=0.8.6",
+    "networkx>=3.6.1",
+    "tree-sitter>=0.25.2",
+]
