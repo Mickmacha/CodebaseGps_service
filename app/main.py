@@ -1,23 +1,20 @@
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 from .ai_client import CodebaseGPSAI
-from .schemas import AnalysisRequest
-from app.config import settings
+
 app = FastAPI()
 
-gps_ai = CodebaseGPSAI(settings.GEMINI_API_KEY)
+ai_engine = CodebaseGPSAI()
 
-@app.post("/api/gps/impact")
-async def get_impact(request: AnalysisRequest):
-    try:
-        # Pass the context and query to our AI client
-        analysis = await gps_ai.analyze_code_impact(
-            code_context=request.context, 
-            user_query=request.query
-        )
-        return {"status": "success", "data": analysis}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+class GPSRequest(BaseModel):
+    task: str  # "search", "impact", or "map"
+    context: str  # The code or file tree
+    query: str = None
 
-@app.get("/api/gps/health")
-def health():
-    return {"status": "online", "engine": "Gemini-GenAI-SDK"}
+
+@app.post("/gps/query")
+async def handle_query(request: GPSRequest):
+    data = await ai_engine.process_task(
+        task=request.task, context=request.context, query=request.query
+    )
+    return {"status": "success", "task": request.task, "data": data}

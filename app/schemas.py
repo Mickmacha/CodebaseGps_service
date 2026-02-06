@@ -1,5 +1,5 @@
-from typing import List
 from pydantic import BaseModel
+from typing import List, Optional
 
 class FileMetadata(BaseModel):
     path: str
@@ -12,26 +12,32 @@ class IndexRequest(BaseModel):
     files: List[FileMetadata]
 
 class ImpactAnalysisResponse(BaseModel):
-    risk_score: int  # 1-10 (How dangerous is this change?)
+    risk_score: int  # 1-10
     explanation: str
-    affected_modules: List[str]  # Paths to files that might break
-    suggested_tests: List[str]  # Specific test cases to run
+    affected_modules: List[str]
+    suggested_tests: List[str]
 
 class Node(BaseModel):
-    id: str        # e.g., "app/main.py" or "UserAuth.login()"
-    label: str     # Short name for display
-    type: str      # "file", "function", or "class"
-    group: int     # For color-coding (e.g., 1 for backend, 2 for utils)
+    id: str        
+    label: str     
+    type: str      
+    group: int     
 
 class Edge(BaseModel):
-    source: str    # ID of the caller
-    target: str    # ID of the callee
-    type: str      # "import", "call", or "data_flow"
+    source: str    
+    target: str    
+    type: str      
 
 class GraphResponse(BaseModel):
     nodes: List[Node]
     links: List[Edge]
-    
-class AnalysisRequest(BaseModel):
-    query: str
-    context: str
+
+# Additional schema for Feature 1 (Search)
+class SearchResult(BaseModel):
+    file_path: str
+    explanation: str
+    relevance_score: int
+
+class SearchResponse(BaseModel):
+    results: List[SearchResult]
+    summary: str
