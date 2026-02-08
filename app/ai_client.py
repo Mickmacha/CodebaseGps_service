@@ -1,19 +1,22 @@
+from typing import Any, Dict, Optional
+
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
-from typing import Optional, Dict, Any
+
 from app.config import settings
 
-from .schemas import SearchResponse, ImpactAnalysisResponse, GraphResponse
-import os
+from .schemas import GraphResponse, ImpactAnalysisResponse, SearchResponse
 
 class CodebaseGPSAI:
     def __init__(self):
         # The new 2026 SDK picks up GEMINI_API_KEY automatically
         self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        self.model_id = "gemini-3-flash-preview" 
+        self.model_id = "gemini-3-flash-preview"
 
-    async def process_task(self, task: str, context: str, query: Optional[str] = None) -> Dict[str, Any]:
+    async def process_task(
+        self, task: str, context: str, query: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Main entry point for the 'One Endpoint' approach.
         """
@@ -46,7 +49,7 @@ class CodebaseGPSAI:
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=schema,
-                temperature=0.1, # Low temperature for reliable architecture work
+                temperature=0.1,  # Low temperature for reliable architecture work
             ),
         )
         # .parsed gives you the Pydantic object instantly
