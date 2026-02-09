@@ -1,23 +1,21 @@
 import os
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
+
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
+
 from app.config import settings
 
 # Import the schemas you provided
-from .schemas import (
-    GraphResponse, 
-    ImpactAnalysisResponse, 
-    SearchResponse, 
-    SearchResult
-)
+from .schemas import GraphResponse, ImpactAnalysisResponse, SearchResponse, SearchResult
+
 
 class CodebaseGPSAI:
     def __init__(self):
         # Using the 2026 google-genai SDK
         self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        self.model_id = "gemini-2.0-flash" # Optimized for speed & structure
+        self.model_id = "gemini-2.0-flash"  # Optimized for speed & structure
 
     async def process_task(
         self, task: str, context: str, query: Optional[str] = None
@@ -39,7 +37,7 @@ class CodebaseGPSAI:
         {context}
 
         TASK:
-        Identify the most relevant files for the user's intent. Do not just look for keyword matches; look for the actual implementation of logic. 
+        Identify the most relevant files for the user's intent. Do not just look for keyword matches; look for the actual implementation of logic.
         Example: If the user asks for "how users pay," find Stripe handlers or wallet logic even if they don't use the word "pay."
 
         OUTPUT REQUIREMENTS:
@@ -56,7 +54,7 @@ class CodebaseGPSAI:
         {context}
 
         TASK:
-        Perform a 'Blast Radius' analysis. If the user modifies the logic specified in the query, what else will break? 
+        Perform a 'Blast Radius' analysis. If the user modifies the logic specified in the query, what else will break?
         Trace dependencies and shared interfaces.
 
         SCORING CRITERIA (risk_score):
@@ -77,7 +75,7 @@ class CodebaseGPSAI:
         {context}
 
         TASK:
-        Convert this codebase into a high-level architectural map. 
+        Convert this codebase into a high-level architectural map.
 
         GROUPING RULES (For the 'group' field):
         - Group 1 (Entry Points): API Routes, Controllers, CLI commands, Main functions.
