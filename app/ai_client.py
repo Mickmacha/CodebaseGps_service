@@ -15,7 +15,7 @@ class CodebaseGPSAI:
     def __init__(self):
         # Using the 2026 google-genai SDK
         self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        self.model_id = "gemini-3.0-flash"  # Optimized for speed & structure
+        self.model_id = "gemini-3-flash-preview"  # Optimized for speed & structure
 
     async def process_task(
         self, task: str, context: str, query: Optional[str] = None
